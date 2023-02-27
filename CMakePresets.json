@@ -1,0 +1,77 @@
+{
+    "version": 3,
+    "configurePresets": [
+      {
+        "name": "linux-release-base",
+        "hidden": true,
+        "generator": "Unix Makefiles",
+        "binaryDir": "${sourceDir}/build",
+        "cacheVariables": {
+          "CMAKE_BUILD_TYPE": "Release",
+          "CMAKE_INSTALL_PREFIX": "${sourceDir}/install"
+        }
+      },
+      {
+        "name": "gcc-coverage",
+        "inherits": "linux-release-base",
+        "cacheVariables": {
+          "CMAKE_C_COMPILER": "gcc",
+          "CMAKE_CXX_COMPILER": "g++",
+          "CMAKE_CXX_FLAGS_COVERAGE": "-g -O0 -fprofile-arcs -ftest-coverage -fprofile-abs-path",
+          "CMAKE_BUILD_TYPE": "Coverage"
+        }
+      },
+      {
+        "name": "clang-release",
+        "inherits": "linux-release-base",
+        "cacheVariables": {
+          "CMAKE_C_COMPILER": "clang",
+          "CMAKE_CXX_COMPILER": "clang++",
+          "CMAKE_CXX_CLANG_TIDY": "clang-tidy"
+        }
+      },
+      {
+        "name": "vs2019-xp",
+        "generator": "Visual Studio 16 2019",
+        "toolset": "v141_xp,host=x86",
+        "architecture": "win32",
+        "binaryDir": "${sourceDir}/build",
+        "cacheVariables": {
+          "CMAKE_INSTALL_PREFIX": "${sourceDir}/install",
+          "CMAKE_CXX_FLAGS": "/DWIN32 /D_WINDOWS /EHsc /MP"
+        }
+      }
+    ],
+    "buildPresets": [
+      {
+        "name": "jenkins-win",
+        "configuration": "Release",
+        "configurePreset": "vs2019-xp"
+      },
+      {
+        "name": "jenkins-gcc",
+        "configurePreset": "gcc-coverage",
+        "jobs": 0
+      },
+      {
+        "name": "jenkins-clang",
+        "configurePreset": "clang-release",
+        "jobs": 0
+      }
+    ],
+    "testPresets": [
+      {
+        "name": "jenkins-win",
+        "configuration": "Release",
+        "configurePreset": "vs2019-xp"
+      },
+      {
+        "name": "jenkins-gcc",
+        "configurePreset": "gcc-coverage"
+      },
+      {
+        "name": "jenkins-clang",
+        "configurePreset": "clang-release"
+      }
+    ]
+  }
